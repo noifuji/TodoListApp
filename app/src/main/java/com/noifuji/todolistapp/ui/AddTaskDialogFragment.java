@@ -14,9 +14,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.noifuji.todolistapp.R;
+import com.noifuji.todolistapp.db.TaskEntity;
 import com.noifuji.todolistapp.viewmodel.TaskViewModel;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -53,8 +55,14 @@ public class AddTaskDialogFragment extends DialogFragment {
         builder.setMessage("タスクの追加")
                 .setPositiveButton("OK", (dialog, id) -> {
                     EditText editText = (EditText) getDialog().findViewById(R.id.add_task_text);
+                    CheckBox isImportantCheckBox = (CheckBox) getDialog().findViewById(R.id.task_is_important);
+
                     if(editText != null) {
-                        mDisposable.add(mTaskViewModel.insertTask(editText.getText().toString())
+                        TaskEntity task = new TaskEntity();
+                        task.setId(0);
+                        task.setText(editText.getText().toString());
+                        task.setIsImportant(isImportantCheckBox.isChecked());
+                        mDisposable.add(mTaskViewModel.insertTask(task)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(() -> {}, throwable -> Log.e(TAG, "Unable to insert.", throwable)));

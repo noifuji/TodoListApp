@@ -12,7 +12,6 @@ import com.noifuji.todolistapp.db.TaskDAO;
 import com.noifuji.todolistapp.db.TaskEntity;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
@@ -31,24 +30,20 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public Flowable<List<String>> getTaskTextList() {
+    public Flowable<List<TaskEntity>> getTaskList() {
         return mTaskDAO.getAll()
                 .map(tasks -> {
                     mTasks = tasks;
-                    return tasks.stream()
-                            .map(task -> task.getText())
-                            .collect(Collectors.toList());
+                    return tasks;
                 });
     }
 
     /**
      *
-     * @param text タスクのテキスト
+     * @param task タスクのテキスト
      * @return
      */
-    public Completable insertTask(String text) {
-        TaskEntity task = new TaskEntity();
-        task.setText(text);
+    public Completable insertTask(TaskEntity task) {
         return mTaskDAO.insert(task);
     }
 

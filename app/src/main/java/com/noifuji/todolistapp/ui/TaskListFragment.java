@@ -17,7 +17,6 @@ import com.noifuji.todolistapp.R;
 import com.noifuji.todolistapp.viewmodel.TaskViewModel;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -54,10 +53,10 @@ public class TaskListFragment extends Fragment implements DeleteTaskListener {
     @Override
     public void onStart() {
         super.onStart();
-        mDisposable.add(mTaskViewModel.getTaskTextList()
+        mDisposable.add(mTaskViewModel.getTaskList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(textList -> mAdapter.setData(textList)
+                .subscribe(taskList -> mAdapter.setData(taskList)
                         , throwable -> Log.e(TAG, "Unable to read tasks.", throwable)));
     }
 
